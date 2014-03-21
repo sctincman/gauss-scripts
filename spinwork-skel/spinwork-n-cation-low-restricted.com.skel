@@ -1,0 +1,9 @@
+%NProcShared=4
+%Chk=${root}-${prefix}+cation-low-restricted.chk
+%Mem=2GB
+#p RB3LYP/6-31g(d,p) Pop=Regular Prop=EPR Guess=(Read) Geom=Checkpoint gfinput
+
+ ${title}
+
+${newcharge}  ${newmult}
+

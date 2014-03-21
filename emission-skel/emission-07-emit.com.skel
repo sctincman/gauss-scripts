@@ -1,0 +1,13 @@
+%RWF=/home/SCRATCH/${root}-07-emit
+%NProcShared=4
+%Chk=${root}-07-emit.chk
+%Mem=2GB
+#p B3LYP/6-31G(d,p) SCRF=(Solvent=${solvent},Read) Geom=Check Guess=Read gfinput
+
+ ${title}
+
+0 1
+
+NonEq=read
+
+

@@ -1,0 +1,7 @@
+%NProcShared=4
+%Chk=${root}-neutral.chk
+%Mem=2GB
+#p B3LYP/6-31+G(d,p)//B3LYP/6-31G(d,p) Pop=Regular Prop=EPR gfinput
+
+ ${title}
+

@@ -1,0 +1,25 @@
+%RWF=/home/SCRATCH/${root}-03-solvstate
+%NProcShared=4
+%Chk=${root}-03-solvstate.chk
+%Mem=2GB
+#p B3LYP/6-31G(d,p) SCRF=(PCM,Solvent=${solvent},Read) guess=read geom=Check pop=regular gfinput
+
+ ${title}
+
+0 1
+
+NonEq=Write
+
+--link1--
+%RWF=/home/SCRATCH/${root}-03-solvstate
+%NProcShared=4
+%Chk=${root}-03-solvstate.chk
+#p B3LYP/6-31G(d,p) TD(NStates=6,Root=1) SCRF=(Solvent=${solvent},ExternalIteration,Read) Geom=Check Guess=Read
+
+ ${title}
+
+0 1
+
+NonEq=Read
+
+

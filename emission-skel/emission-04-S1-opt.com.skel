@@ -1,0 +1,9 @@
+%RWF=/home/SCRATCH/${root}-04-S1-opt
+%NProcShared=4
+%Chk=${root}-04-S1-opt.chk
+%Mem=2GB
+#p B3LYP/6-31G(d,p) TD=(Read,NStates=6,Root=1) SCRF=(PCM,Solvent=${solvent}) guess=read geom=AllCheck Pop=Regular gfinput Opt
+
+ ${title}
+
+

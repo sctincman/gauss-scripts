@@ -1,0 +1,9 @@
+%RWF=/home/SCRATCH/${root}-05-S1-freq
+%NProcShared=4
+%Chk=${root}-05-S1-freq.chk
+%Mem=2GB
+#p B3LYP/6-31G(d,p) TD=(NStates=6,Root=1) Freq SCRF=(Solvent=${solvent}) Geom=AllCheck Guess=Read gfinput
+
+ ${title}
+
+

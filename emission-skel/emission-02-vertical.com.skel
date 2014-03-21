@@ -1,0 +1,9 @@
+%RWF=/home/SCRATCH/${root}-02-vertical
+%NProcShared=4
+%Chk=${root}-02-vertical.chk
+%Mem=2GB
+#p B3LYP/6-31G(d,p) TD=NStates=6 SCRF=(PCM,Solvent=${solvent}) guess=read geom=AllCheck Pop=Regular gfinput
+
+ ${title}
+
+
