@@ -1,20 +1,57 @@
 #!/bin/sh
-# just a shortcut to avoid copying and pasting this stupid command over and over and over again
 
-filename=$1
+readonly PROGNAME=$(basename $0)
+readonly ARGN=${#}
 
-if [ "${filename#*\.}" != "fchk" ] ; then
-    echo "File not a formatted checkpoint file" 1>&2
-    if [ "${filename#*\.}" = "chk" ] ; then
-	echo "File is a binary checkpoint file. Converting"  1>&2
-	formchk ${filename} "${filename%\.chk}.fchk"
-	filename="${filename%\.chk}.fchk"
+readonly FILENAME=$1
+readonly HOMOFILE=$2
+readonly LUMOFILE=$3
+
+usage() {
+    echo "Usage: $PROGNAME input.[f]chk [homo.cube lumo.cube]"
+    echo "    Generates cubefiles for the HOMO/LUMO orbitals from output."
+    echo "    input.[f]chk is the checkpoint file from Gaussian."
+    echo "    [homo,lumo].cube are the optional output filenames."
+    echo "    (By default, will output to input-[HOMO,LUMO].cube)"
+    echo "    cubgen requires fchk files, but this will convert chk files"
+    echo "    for you."
+}
+
+get_fchkfile() {
+    local filename=$1
+
+    if [ "${filename#*\.}" = "fchk" ]; then
+	echo $filename
+    else
+	if [ "${filename#*\.}" = "chk" ]; then
+	    echo "File is a binary checkpoint file. Converting"  1>&2
+	    formchk $filename
+	    echo "${filename%\.chk}.fchk"
+	else
+	    echo "Error: Not a checkpoint file" 1>&2
+	    exit 1
+	fi
     fi
-fi
+}
 
-if [ "${filename#*\.}" = "fchk" ] ; then
-    cubegen 0 MO=Homo "${filename}" "${filename%\.fchk}-HOMO.cube" 0 h
-    cubegen 0 MO=Lumo "${filename}" "${filename%\.fchk}-LUMO.cube" 0 h
-fi
+main() {
+    if [ $ARGN -eq 0 -o $ARGN -ne 1 -a $ARGN -ne 3 ] ; then
+	usage
+	exit 0
+    fi
 
+    local fchkfile=$(get_fchkfile $FILENAME)
 
+    local homocube=${fchkfile%\.fchk}-HOMO.cube
+    local lumocube=${fchkfile%\.fchk}-LUMO.cube
+
+    if [ $ARGN -eq 3 ]; then
+	homocube=${HOMOFILE}
+	lumocube=${LUMOFILE}
+    fi
+
+    cubegen 0 MO=Homo "$fchkfile" "${homocube}" 0 h
+    cubegen 0 MO=Lumo "$fchkfile" "${lumocube}" 0 h
+}
+
+main

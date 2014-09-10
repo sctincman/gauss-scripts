@@ -1,36 +1,53 @@
 #!/bin/sh
-# just a shortcut to avoid copying and pasting this stupid command over and over and over again
 
-if [ ${#} -eq 0 ] ; then
-    echo 'Usage: cubespin file.[f]chk '
-    echo '    file.[f]chk is a Gaussian checkpoint file'
-    echo '        will convert to a formatted checkpoint file automatically'
-    echo '    will place in a subdirectory named "(filename)-cubes'
-    echo '        this can be overridden with the CUBE_DIR variable'
-    exit 0
-fi
+readonly PROGNAME=$(basename $0)
+readonly ARGN=${#}
 
-filename=$1
+readonly FILENAME=$1
+readonly SPINFILE=$2
 
-if [ ${filename#*\.} != "fchk" ] ; then
-    echo "File not a formatted checkpoint file" 1>&2
-    if [ ${filename#*\.} = "chk" ] ; then
-	echo "File is a binary checkpoint file. Converting"  1>&2
-	formchk ${filename} "${filename%\.chk}.fchk"
-	filename="${filename%\.chk}.fchk"
+usage() {
+    echo "Usage: $PROGNAME input.[f]chk [spin.cube]"
+    echo "    Generates cubefile for the spindensity from output."
+    echo "    input.[f]chk is the checkpoint file from Gaussian."
+    echo "    spin.cube is the optional output filename."
+    echo "    (By default, will output to input-spin.cube)"
+    echo "    cubgen requires fchk files, but this will convert chk files"
+    echo "    for you."
+}
+
+get_fchkfile() {
+    local filename=$1
+
+    if [ "${filename#*\.}" = "fchk" ]; then
+	echo $filename
+    else
+	if [ "${filename#*\.}" = "chk" ]; then
+	    echo "File is a binary checkpoint file. Converting"  1>&2
+	    formchk $filename
+	    echo "${filename%\.chk}.fchk"
+	else
+	    echo "Error: Not a checkpoint file" 1>&2
+	    exit 1
+	fi
     fi
-fi
+}
 
-if [ -z ${CUBE_DIR} ] ; then
-    CUBE_DIR=.
-fi
+main() {
+    if [ $ARGN -eq 0 -o $ARGN -gt 2 ] ; then
+	usage
+	exit 0
+    fi
 
-if [ ! -d ${CUBE_DIR} ] ; then
-    mkdir -p ${CUBE_DIR}
-fi
+    local fchkfile=$(get_fchkfile $FILENAME)
 
-if [ ${filename#*\.} = "fchk" ] ; then
-    cubegen 0 Spin "${filename}" "${CUBE_DIR}/${filename%\.fchk}-spin.cube" 0 h
-fi
+    local spincube=${fchkfile%\.fchk}-spin.cube
 
+    if [ $ARGN -eq 3 ]; then
+	spincube=${SPINFILE}
+    fi
 
+    cubegen 0 Spin "$fchkfile" "${spincube}" 0 h
+}
+
+main
